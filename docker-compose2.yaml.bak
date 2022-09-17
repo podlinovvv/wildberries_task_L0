@@ -1,0 +1,13 @@
+
+  go_service:
+    build: .
+    entrypoint: /main
+    depends_on:
+      - db
+      - nats
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - "myNetwork"
+      
