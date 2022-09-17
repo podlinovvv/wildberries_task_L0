@@ -14,14 +14,7 @@ COPY go.sum .
 RUN go mod download
 COPY . .
 
-RUN go build -o /main
-
-#########
-# second stage to obtain a very small image
-FROM alpine
-
-COPY --from=builder /main .
-
 EXPOSE 8080
 
+RUN go build -o /main
 CMD ["/main"]

@@ -21,7 +21,8 @@ func RunServer(nh *service.Handler) {
 	mux.HandleFunc("/", NewWebHandler.handlePage)
 	mux.HandleFunc("/get", NewWebHandler.handlePage)
 
-	err := http.ListenAndServe("localhost:8080", mux)
+	//err := http.ListenAndServe("localhost:8080", mux)
+	err := http.ListenAndServe(":8080", mux)
 	if err != nil {
 		log.Fatalln("There's an error with the server:", err)
 	}
@@ -39,9 +40,12 @@ func CreateWebHandler(nh *service.Handler) *WebHandler {
 
 func (wh *WebHandler) handlePage(writer http.ResponseWriter, request *http.Request) {
 	if request.Method == "GET" {
-		tmplt, _ = template.ParseFiles("html/index.html")
+		tmplt, err := template.ParseFiles("html/index.html")
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 		event := Page{}
-		err := tmplt.Execute(writer, event)
+		err = tmplt.Execute(writer, event)
 		if err != nil {
 			fmt.Println(err.Error())
 			return
@@ -49,7 +53,11 @@ func (wh *WebHandler) handlePage(writer http.ResponseWriter, request *http.Reque
 	}
 
 	if request.Method == "POST" {
-		tmplt, _ = template.ParseFiles("html/index.html")
+		tmplt, err := template.ParseFiles("html/index.html")
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+
 		orderId := request.FormValue("id")
 
 		jsonToPrint, err := wh.nh.ReadOrderById(orderId)
