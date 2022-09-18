@@ -66,6 +66,6 @@ func (h *Handler) ToStore(m *stan.Msg) {
 		fmt.Println("Can't validate json\n" + err.Error())
 		return
 	} else {
-		fmt.Println("order stored")
+		fmt.Printf("order stored with id %s\n", newOrder.OrderUID)
 	}
 }

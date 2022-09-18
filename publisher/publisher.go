@@ -35,7 +35,7 @@ func pub(sc stan.Conn) {
 			return
 		}
 		fmt.Printf("sent good json with id %d\n", uid)
-		if uid%10 == 0 {
+		if uid%4 == 0 {
 			if err := sc.Publish("main", generateInvalidJson()); err != nil {
 				fmt.Println(err.Error())
 				return
