@@ -55,10 +55,10 @@ func (s *Storage) ReadOrderById(id string) ([]byte, error) {
 	order, ok := s.C[id]
 
 	if ok {
-		fmt.Println("из кэша")
+		fmt.Println("read from cache")
 		return order, nil
 	}
-	fmt.Println("не из кэша")
+	fmt.Println("not in cache, recovering from DB")
 	err := s.Db.QueryRow(
 		"select data from orders "+
 			"where id = $1 ",

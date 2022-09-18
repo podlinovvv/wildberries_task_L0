@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/nats-io/stan.go"
-	"log"
 	"wb_l0/repos/Cache"
 	"wb_l0/structs"
 )
@@ -18,7 +17,8 @@ func Sub(h *Handler) {
 	sc, _ := stan.Connect("test-cluster", id, stan.NatsURL("natscont"+":4222"))
 	_, err := sc.Subscribe("main", handlerF, stan.DeliverAllAvailable(), stan.DurableName("client-007"))
 	if err != nil {
-		log.Panic("can't subscribe to the channel")
+		fmt.Println("can't subscribe to the channel")
+		panic(err)
 	}
 }
 
@@ -50,29 +50,22 @@ func (h *Handler) ToStore(m *stan.Msg) {
 
 	err := json.Unmarshal(m.Data, &newOrder)
 	if err != nil {
-		log.Println("Can't unmarshal data")
+		fmt.Println("Wrong JSON, can't unmarshal data")
 		return
 	}
 
-	/*err = order.Check()
-	if err != nil {
-		log.Println("Can't validate json\n" + err.Error())
-		return
-	}
-	*/
-	fmt.Println(newOrder.OrderUID)
+	//fmt.Println(newOrder.OrderUID)
 	_, ok := h.Storage.C[newOrder.OrderUID]
 	if ok {
-		fmt.Println("не пишем в бд, уже было в кэше")
+		fmt.Println("already in cache")
 		return
 	}
 
 	err = h.WriteOrder(newOrder.OrderUID, m.Data)
 	if err != nil {
-		log.Println("Can't validate json\n" + err.Error())
-		//fmt.Println("error!")
+		fmt.Println("Can't validate json\n" + err.Error())
 		return
 	} else {
-		fmt.Println("life is good")
+		fmt.Println("order stored")
 	}
 }
