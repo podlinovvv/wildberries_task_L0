@@ -24,8 +24,10 @@ func NewStorage() *Storage {
 
 func loadCacheFromDB(db *sql.DB) map[string][]byte {
 	cache := make(map[string][]byte)
-	rows, _ := db.Query("select * from orders")
-
+	rows, err := db.Query("select * from orders")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 	for rows.Next() {
 		var id string
 		var data []byte
@@ -71,13 +73,3 @@ func (s *Storage) ReadOrderById(id string) ([]byte, error) {
 	s.C[id] = order
 	return order, nil
 }
-
-/*func (s *Storage) restoreCacheFromDB() {
-	s.db
-	var orders []structs.Order
-
-	for _, order := range orders {
-		s.WriteOrder(&order)
-	}
-}
-*/

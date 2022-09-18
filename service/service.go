@@ -12,8 +12,6 @@ var id = "7"
 
 func Sub(h *Handler) {
 	handlerF := h.ToStore
-
-	//sc, _ := stan.Connect("test-cluster", id, stan.NatsURL("0.0.0.0:4222"))
 	sc, _ := stan.Connect("test-cluster", id, stan.NatsURL("natscont"+":4222"))
 	_, err := sc.Subscribe("main", handlerF, stan.DeliverAllAvailable(), stan.DurableName("client-007"))
 	if err != nil {
@@ -21,20 +19,6 @@ func Sub(h *Handler) {
 		panic(err)
 	}
 }
-
-/*type Handler struct {
-	db    *sql.DB
-	cache *map[string][]byte
-}*/
-
-/*func newHandler() *Handler {
-	c := make(map[string][]byte)
-
-	return &Handler{
-		db:    database.ConnectToDb(),
-		cache: &c,
-	}
-}*/
 
 type Handler struct {
 	*Cache.Storage
@@ -54,10 +38,9 @@ func (h *Handler) ToStore(m *stan.Msg) {
 		return
 	}
 
-	//fmt.Println(newOrder.OrderUID)
 	_, ok := h.Storage.C[newOrder.OrderUID]
 	if ok {
-		fmt.Println("already in cache")
+		fmt.Println("Already in cache")
 		return
 	}
 
@@ -66,6 +49,6 @@ func (h *Handler) ToStore(m *stan.Msg) {
 		fmt.Println("Can't validate json\n" + err.Error())
 		return
 	} else {
-		fmt.Printf("order stored with id %s\n", newOrder.OrderUID)
+		fmt.Printf("Order stored with id %s\n", newOrder.OrderUID)
 	}
 }

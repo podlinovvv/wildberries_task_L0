@@ -8,8 +8,6 @@ import (
 	"wb_l0/service"
 )
 
-var tmplt *template.Template
-
 type Page struct {
 	OID  string
 	Body string
@@ -21,7 +19,6 @@ func RunServer(nh *service.Handler) {
 	mux.HandleFunc("/", NewWebHandler.handlePage)
 	mux.HandleFunc("/get", NewWebHandler.handlePage)
 
-	//err := http.ListenAndServe("localhost:8080", mux)
 	err := http.ListenAndServe(":8080", mux)
 	if err != nil {
 		log.Fatalln("There's an error with the server:", err)
@@ -59,19 +56,7 @@ func (wh *WebHandler) handlePage(writer http.ResponseWriter, request *http.Reque
 		}
 
 		orderId := request.FormValue("id")
-
 		jsonToPrint, err := wh.nh.ReadOrderById(orderId)
-
-		/*newOrder := structs.Order{}
-		err = json.Unmarshal(jsonToPrint, &newOrder)
-		niceJson, err := json.MarshalIndent(newOrder, "", "  ")
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		event := Page{
-			Body: string(niceJson),
-		}*/
 
 		event := Page{
 			OID:  "ID: " + orderId,
@@ -80,7 +65,7 @@ func (wh *WebHandler) handlePage(writer http.ResponseWriter, request *http.Reque
 
 		if err != nil {
 			event = Page{
-				Body: "id \"" + orderId + "\" не найден",
+				Body: "id \"" + orderId + "\" not found",
 			}
 		}
 

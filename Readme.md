@@ -1,5 +1,6 @@
 ## Задание wildberries L0.
 
+### Service
 
 Cервис, а также nats-streaming и база данных postgres запускаются командой 
 
@@ -15,6 +16,7 @@ Cервис, а также nats-streaming и база данных postgres за
 
 API доступен на `localhost:8080`
 
+### Publisher
 
 Скрипт для отправки данных в канал **publisher.go** находится в одноимённой папке и запускается вручную.
 
